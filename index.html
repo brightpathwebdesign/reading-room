@@ -651,22 +651,26 @@ option { background: var(--void); }
   <div class="page-banner">
     <div class="page-eyebrow">Chart Conversations</div>
     <div class="page-title">Ask the Stars</div>
-    <div class="page-subtitle">Ask anything about anyone in the circle — their chart, energy, placements, or your connection with them</div>
+    <div class="page-subtitle">Ask anything about anyone in the circle — their chart, energy, compatibility, or just for fun</div>
   </div>
   <div class="chat-layout">
-    <div class="people-panel" id="chat-people-panel" style="position:sticky;top:20px">
+    <div class="people-panel" id="chat-people-panel" style="position:sticky;top:20px;max-height:calc(100vh - 140px);overflow-y:auto">
       <div class="people-panel-title">Who are you asking about?</div>
       <div id="chat-toggle-list"></div>
+      <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border)">
+        <div class="people-panel-title" style="margin-bottom:8px">✦ Fun Prompts</div>
+        <div id="fun-prompts-list" style="display:flex;flex-direction:column;gap:5px"></div>
+      </div>
     </div>
     <div>
       <div class="chat-window" id="chat-window">
         <div class="empty-state">
           <div class="es-icon">☽</div>
-          <div class="es-text">Select someone and ask anything</div>
+          <div class="es-text">Select someone and ask anything — serious or just for fun</div>
         </div>
       </div>
       <div class="chat-input-row">
-        <textarea class="chat-input" id="chat-input" rows="2" placeholder="Ask about their chart, placements, your connection, what a transit means for them..." onkeydown="handleChatKey(event)"></textarea>
+        <textarea class="chat-input" id="chat-input" rows="2" placeholder="Ask anything — their chart, energy, compatibility, who would be the most fun to go bowling with..." onkeydown="handleChatKey(event)"></textarea>
         <button class="btn btn-primary" onclick="sendChat()">Send</button>
       </div>
     </div>
@@ -781,6 +785,11 @@ option { background: var(--void); }
 
 <script>
 // ═══════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════
+// API KEY — Replace with your Anthropic key (sk-ant-...)
+// ═══════════════════════════════════════════════════════
+const API_KEY = "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";
+
 // DATA — All profiles with accurate ratings
 // ═══════════════════════════════════════════════════════
 const PEOPLE = [
@@ -1031,7 +1040,7 @@ function parseFriend(r) {
 async function callAI(messages, maxTokens=3000) {
   const res = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
-    headers: {'Content-Type': 'application/json'},
+    headers: {'Content-Type': 'application/json', 'x-api-key': API_KEY, 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true'},
     body: JSON.stringify({model:'claude-sonnet-4-20250514', max_tokens:maxTokens, system:SYS, messages})
   });
   const d = await res.json();
@@ -1184,6 +1193,35 @@ function copyReadings() {
 let chatPerson = null;
 const chatHistory = [];
 
+// Fun prompts — general (no person needed) and person-specific
+const FUN_PROMPTS_GENERAL = [
+  { label: '🎳 Best bowling partner?', q: 'Based on everyone in the circle, who would be the most fun to go bowling with and why? Rank the top 3.' },
+  { label: '🎉 Best party energy?', q: 'Who in the circle brings the best party energy? Who would turn a boring night into a legendary one?' },
+  { label: '🌶️ Most dramatic in a group chat?', q: 'Astrologically speaking, who in the circle is most likely to start drama in a group chat?' },
+  { label: '😂 Funniest to hang with?', q: 'Who would be the most genuinely hilarious person to spend a whole day with? Based on their charts.' },
+  { label: '🔮 Most psychic energy?', q: 'Who in the circle has the most psychic or intuitive energy based on their chart?' },
+  { label: '🌙 Most likely to ghost?', q: 'Based on their charts, who in the circle is most likely to disappear for a week with no explanation?' },
+  { label: '💅 Most extra?', q: 'Who in the circle is astrologically the most extra — the most dramatic, most over the top, most likely to make everything a whole production?' },
+  { label: '🏆 Most loyal ride-or-die?', q: 'Who in the circle has the most loyal, ride-or-die energy based on their chart?' },
+  { label: '🍵 Best person to vent to?', q: 'Who in the circle would be the best person to vent to — who gives the realest advice without judgment?' },
+  { label: '🌹 Most romantic energy?', q: 'Who in the circle has the most deeply romantic, love-story energy in their chart?' },
+  { label: '🎭 Biggest main character energy?', q: 'Who has the biggest main character energy based on their placements?' },
+  { label: '🥊 Most likely to fight for you?', q: 'Who in the circle would actually show up and fight for you if things got real?' },
+];
+
+const FUN_PROMPTS_PERSON = [
+  { label: '🎳 Bowling date?', q: (name) => `Would ${name} be fun to go bowling with? What would that vibe be like based on their chart?` },
+  { label: '😤 When they're mad?', q: (name) => `Based on ${name}'s chart, what do they actually look like when they're mad? How do they fight?` },
+  { label: '🥰 Love language deep dive', q: (name) => `Give me a deep dive on ${name}'s love language based on every placement — how they give love, receive it, and what they secretly need.` },
+  { label: '🌙 2am energy?', q: (name) => `What is ${name}'s 2am energy? What are they doing, thinking, feeling at 2am based on their chart?` },
+  { label: '🧠 How they think?', q: (name) => `How does ${name}'s mind actually work? Walk me through their Mercury, their mental patterns, and how they process the world.` },
+  { label: '🎭 Their villain arc?', q: (name) => `If ${name} went full villain arc, what would it look like? What would trigger it and how would it play out based on their chart?` },
+  { label: '💅 Main character moment?', q: (name) => `Describe ${name}'s main character moment based on their chart — what's their peak, their power, their glow-up energy?` },
+  { label: '🍵 What they really think of you?', q: (name) => `Based on ${name}'s chart and the synastry with Jasmine, what do they actually think and feel about Jasmine deep down?` },
+  { label: '🔮 Their 2026 vibe?', q: (name) => `What is ${name}'s overall energy and theme for 2026 based on their chart and transits?` },
+  { label: '⚡ Their triggers?', q: (name) => `What are ${name}'s biggest emotional triggers based on their chart? What sets them off and why?` },
+];
+
 function renderChatToggles() {
   const list = document.getElementById('chat-toggle-list');
   list.innerHTML = '';
@@ -1195,6 +1233,27 @@ function renderChatToggles() {
     b.onclick = () => selectChatPerson(p.id);
     list.appendChild(b);
   });
+  renderFunPrompts();
+}
+
+function renderFunPrompts() {
+  const el = document.getElementById('fun-prompts-list');
+  if (!el) return;
+  el.innerHTML = '';
+  const prompts = chatPerson ? FUN_PROMPTS_PERSON : FUN_PROMPTS_GENERAL;
+  prompts.forEach(pr => {
+    const b = document.createElement('button');
+    b.style.cssText = 'width:100%;background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:6px;padding:7px 10px;cursor:pointer;text-align:left;color:var(--muted);font-family:Cormorant Garamond,serif;font-size:12px;transition:all .15s;line-height:1.3';
+    b.textContent = pr.label;
+    b.onmouseenter = () => { b.style.borderColor = 'var(--border2)'; b.style.color = 'var(--text)'; };
+    b.onmouseleave = () => { b.style.borderColor = 'var(--border)'; b.style.color = 'var(--muted)'; };
+    b.onclick = () => {
+      const q = chatPerson ? pr.q(PEOPLE.find(x=>x.id===chatPerson)?.name || '') : pr.q;
+      document.getElementById('chat-input').value = q;
+      document.getElementById('chat-input').focus();
+    };
+    el.appendChild(b);
+  });
 }
 renderChatToggles();
 
@@ -1203,7 +1262,8 @@ function selectChatPerson(id) {
   document.querySelectorAll('#chat-toggle-list .person-toggle').forEach(b => b.classList.remove('on'));
   document.getElementById('ct-'+id)?.classList.add('on');
   const p = PEOPLE.find(x => x.id === id);
-  document.getElementById('chat-window').innerHTML = `<div class="empty-state"><div class="es-icon">${signEmoji(p.sun)}</div><div class="es-text">Now reading for ${p.name} — ask anything</div></div>`;
+  document.getElementById('chat-window').innerHTML = `<div class="empty-state"><div class="es-icon">${signEmoji(p.sun)}</div><div class="es-text">Now reading for ${p.name} — ask anything or pick a fun prompt</div></div>`;
+  renderFunPrompts();
 }
 
 function addMessage(text, role) {
@@ -1276,7 +1336,7 @@ async function generateEyeReading() {
   try {
     const res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
-      headers: {'Content-Type': 'application/json'},
+      headers: {'Content-Type': 'application/json', 'x-api-key': API_KEY, 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true'},
       body: JSON.stringify({model:'claude-sonnet-4-20250514', max_tokens:2000, system:SYS,
         messages:[{role:'user', content:[{type:'image',source:{type:'base64',media_type:'image/jpeg',data:eyeImageData}},{type:'text',text:prompt}]}]})
     });
