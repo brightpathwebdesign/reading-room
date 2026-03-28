@@ -1195,31 +1195,31 @@ const chatHistory = [];
 
 // Fun prompts — general (no person needed) and person-specific
 const FUN_PROMPTS_GENERAL = [
-  { label: '🎳 Best bowling partner?', q: 'Based on everyone in the circle, who would be the most fun to go bowling with and why? Rank the top 3.' },
-  { label: '🎉 Best party energy?', q: 'Who in the circle brings the best party energy? Who would turn a boring night into a legendary one?' },
-  { label: '🌶️ Most dramatic in a group chat?', q: 'Astrologically speaking, who in the circle is most likely to start drama in a group chat?' },
-  { label: '😂 Funniest to hang with?', q: 'Who would be the most genuinely hilarious person to spend a whole day with? Based on their charts.' },
-  { label: '🔮 Most psychic energy?', q: 'Who in the circle has the most psychic or intuitive energy based on their chart?' },
-  { label: '🌙 Most likely to ghost?', q: 'Based on their charts, who in the circle is most likely to disappear for a week with no explanation?' },
-  { label: '💅 Most extra?', q: 'Who in the circle is astrologically the most extra — the most dramatic, most over the top, most likely to make everything a whole production?' },
-  { label: '🏆 Most loyal ride-or-die?', q: 'Who in the circle has the most loyal, ride-or-die energy based on their chart?' },
-  { label: '🍵 Best person to vent to?', q: 'Who in the circle would be the best person to vent to — who gives the realest advice without judgment?' },
-  { label: '🌹 Most romantic energy?', q: 'Who in the circle has the most deeply romantic, love-story energy in their chart?' },
-  { label: '🎭 Biggest main character energy?', q: 'Who has the biggest main character energy based on their placements?' },
-  { label: '🥊 Most likely to fight for you?', q: 'Who in the circle would actually show up and fight for you if things got real?' },
+  { label: "🎳 Best bowling partner?", q: "Based on everyone in the circle, who would be the most fun to go bowling with and why? Rank the top 3." },
+  { label: "🎉 Best party energy?", q: "Who in the circle brings the best party energy? Who would turn a boring night into a legendary one?" },
+  { label: "🌶️ Most dramatic in a group chat?", q: "Astrologically speaking, who in the circle is most likely to start drama in a group chat?" },
+  { label: "😂 Funniest to hang with?", q: "Who would be the most genuinely hilarious person to spend a whole day with? Based on their charts." },
+  { label: "🔮 Most psychic energy?", q: "Who in the circle has the most psychic or intuitive energy based on their chart?" },
+  { label: "🌙 Most likely to ghost?", q: "Based on their charts, who in the circle is most likely to disappear for a week with no explanation?" },
+  { label: "💅 Most extra?", q: "Who in the circle is astrologically the most extra — the most dramatic, most over the top, most likely to make everything a whole production?" },
+  { label: "🏆 Most loyal ride-or-die?", q: "Who in the circle has the most loyal, ride-or-die energy based on their chart?" },
+  { label: "🍵 Best person to vent to?", q: "Who in the circle would be the best person to vent to — who gives the realest advice without judgment?" },
+  { label: "🌹 Most romantic energy?", q: "Who in the circle has the most deeply romantic, love-story energy in their chart?" },
+  { label: "🎭 Biggest main character energy?", q: "Who has the biggest main character energy based on their placements?" },
+  { label: "🥊 Most likely to fight for you?", q: "Who in the circle would actually show up and fight for you if things got real?" },
 ];
 
 const FUN_PROMPTS_PERSON = [
-  { label: '🎳 Bowling date?', q: (name) => `Would ${name} be fun to go bowling with? What would that vibe be like based on their chart?` },
-  { label: '😤 When they're mad?', q: (name) => `Based on ${name}'s chart, what do they actually look like when they're mad? How do they fight?` },
-  { label: '🥰 Love language deep dive', q: (name) => `Give me a deep dive on ${name}'s love language based on every placement — how they give love, receive it, and what they secretly need.` },
-  { label: '🌙 2am energy?', q: (name) => `What is ${name}'s 2am energy? What are they doing, thinking, feeling at 2am based on their chart?` },
-  { label: '🧠 How they think?', q: (name) => `How does ${name}'s mind actually work? Walk me through their Mercury, their mental patterns, and how they process the world.` },
-  { label: '🎭 Their villain arc?', q: (name) => `If ${name} went full villain arc, what would it look like? What would trigger it and how would it play out based on their chart?` },
-  { label: '💅 Main character moment?', q: (name) => `Describe ${name}'s main character moment based on their chart — what's their peak, their power, their glow-up energy?` },
-  { label: '🍵 What they really think of you?', q: (name) => `Based on ${name}'s chart and the synastry with Jasmine, what do they actually think and feel about Jasmine deep down?` },
-  { label: '🔮 Their 2026 vibe?', q: (name) => `What is ${name}'s overall energy and theme for 2026 based on their chart and transits?` },
-  { label: '⚡ Their triggers?', q: (name) => `What are ${name}'s biggest emotional triggers based on their chart? What sets them off and why?` },
+  { label: "🎳 Bowling date?", q: (name) => `Would ${name} be fun to go bowling with? What would that vibe be like based on their chart?` },
+  { label: "😤 When they are mad?", q: (name) => `Based on ${name}'s chart, what do they actually look like when they are mad? How do they fight?` },
+  { label: "🥰 Love language deep dive", q: (name) => `Give me a deep dive on ${name}'s love language based on every placement — how they give love, receive it, and what they secretly need.` },
+  { label: "🌙 2am energy?", q: (name) => `What is ${name}'s 2am energy? What are they doing, thinking, feeling at 2am based on their chart?` },
+  { label: "🧠 How they think?", q: (name) => `How does ${name}'s mind actually work? Walk me through their Mercury, their mental patterns, and how they process the world.` },
+  { label: "🎭 Their villain arc?", q: (name) => `If ${name} went full villain arc, what would it look like? What would trigger it and how would it play out based on their chart?` },
+  { label: "💅 Main character moment?", q: (name) => `Describe ${name}'s main character moment based on their chart. What is their peak, their power, their glow-up energy?` },
+  { label: "🍵 What they really think?", q: (name) => `Based on ${name}'s chart and synastry with Jasmine, what do they actually think and feel about Jasmine deep down?` },
+  { label: "🔮 Their 2026 vibe?", q: (name) => `What is ${name}'s overall energy and theme for 2026 based on their chart and transits?` },
+  { label: "⚡ Their triggers?", q: (name) => `What are ${name}'s biggest emotional triggers based on their chart? What sets them off and why?` },
 ];
 
 function renderChatToggles() {
